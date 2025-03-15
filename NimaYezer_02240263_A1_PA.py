@@ -1,65 +1,115 @@
-def is_prime_number(number):
-    return number > 1 and all(number % divisor != 0 for divisor in range(2, int(number**0.5) + 1))
+import math
 
-def calculate_prime_sum(start_num, end_num):
-    try:
-        start_num, end_num = int(start_num), int(end_num)
-        prime_sum = sum(num for num in range(min(start_num, end_num), max(start_num, end_num) + 1) if is_prime_number(num))
-        return f"Sum: {prime_sum}"
-    except ValueError:
-        return "Error: Invalid input"
+def is_prime(n):
+    """Check if a number is prime."""
+    if n < 2:
+        return False
+    for i in range(2, int(math.sqrt(n)) + 1):
+        if n % i == 0:
+            return False
+    return True
 
-def convert_length(length_value, length_unit):
-    try:
-        length_value = float(length_value)
-        if length_unit.upper() == 'M':
-            converted_value = round(length_value * 3.28084, 2)
-            return f"{length_value} meter(s) = {converted_value} feet"
-        else:
-            converted_value = round(length_value / 3.28084, 2)
-            return f"{length_value} foot/feet = {converted_value} meters"
-    except ValueError:
-        return "Error: Invalid input"
+def prime_sum(start, end):
+    """Calculate the sum of all prime numbers within a range."""
+    return sum(n for n in range(start, end + 1) if is_prime(n))
 
-def count_consonants_in_text(input_text):
-    consonant_count = sum(1 for char in input_text.lower() if char in 'bcdfghjklmnpqrstvwxyz')
-    return f"Consonants: {consonant_count}"
+def length_converter(value, unit):
+    """Convert between meters and feet."""
+    if unit.upper() == 'M':
+        return round(value * 3.28084, 2)  # Meters to Feet
+    elif unit.upper() == 'F':
+        return round(value / 3.28084, 2)  # Feet to Meters
+    else:
+        raise ValueError("Invalid conversion unit. Use 'M' or 'F'.")
 
-def find_min_max(numbers_string):
-    try:
-        number_list = [float(num) for num in numbers_string.split()]
-        return f"Min: {min(number_list)}, Max: {max(number_list)}"
-    except ValueError:
-        return "Error: Invalid input"
+def count_consonants(text):
+    """Count the number of consonants in a string."""
+    consonants = "bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ"
+    return sum(1 for char in text if char in consonants)
 
-def check_if_palindrome(input_string):
-    cleaned_string = ''.join(char.lower() for char in input_string if char.isalnum())
-    return f"Is palindrome: {cleaned_string == cleaned_string[::-1]}"
+def min_max_finder(numbers):
+    """Find the smallest and largest numbers in a list."""
+    return min(numbers), max(numbers)
 
-def run_application():
+def is_palindrome(text):
+    """Check if a string is a palindrome, ignoring spaces and case."""
+    cleaned_text = ''.join(text.lower().split())
+    return cleaned_text == cleaned_text[::-1]
+
+def word_counter(file_path):
+    """Count occurrences of specified words in a file."""
+    target_words = ["the", "was", "and"]
+    word_count = {word: 0 for word in target_words}
+    
+    with open(file_path, 'r', encoding='utf-8') as file:
+        words = file.read().lower().split()
+        for word in target_words:
+            word_count[word] = words.count(word)
+    
+    return word_count
+
+def main():
     while True:
-        print("\n1. Calculate Sum of Primes\n2. Convert Length\n3. Count Consonants")
-        print("4. Find Min/Max Values\n5. Check Palindrome\n0. Exit")
+        print("\nSelect a function (1-6):")
+        print("1. Calculate the sum of prime numbers")
+        print("2. Convert length units")
+        print("3. Count consonants in a string")
+        print("4. Find min and max numbers")
+        print("5. Check for palindrome")
+        print("6. Word Counter")
+        print("7. Exit program")
         
-        user_selection = input("\nSelect an option (0-5): ")
+        choice = input("Enter your choice: ")
         
-        if user_selection == '0':
+        if choice == '1':
+            try:
+                start = int(input("Enter start of range: "))
+                end = int(input("Enter end of range: "))
+                print("Sum of prime numbers:", prime_sum(start, end))
+            except ValueError:
+                print("Invalid input. Please enter integers.")
+        
+        elif choice == '2':
+            try:
+                value = float(input("Enter length value: "))
+                unit = input("Convert to (M for meters, F for feet): ")
+                print("Converted value:", length_converter(value, unit))
+            except ValueError:
+                print("Invalid input. Please enter a number and a valid unit.")
+        
+        elif choice == '3':
+            text = input("Enter a string: ")
+            print("Number of consonants:", count_consonants(text))
+        
+        elif choice == '4':
+            try:
+                num_count = int(input("How many numbers will you enter? "))
+                numbers = [float(input(f"Enter number {i+1}: ")) for i in range(num_count)]
+                min_val, max_val = min_max_finder(numbers)
+                print(f"Smallest: {min_val}, Largest: {max_val}")
+            except ValueError:
+                print("Invalid input. Please enter numbers only.")
+        
+        elif choice == '5':
+            text = input("Enter a string: ")
+            print("Is palindrome:", is_palindrome(text))
+        
+        elif choice == '6':
+            file_path = input("Enter the path to the text file: ")
+            try:
+                print("Word counts:", word_counter(file_path))
+            except FileNotFoundError:
+                print("File not found. Please enter a valid file path.")
+        
+        elif choice == '7':
+            print("Exiting program. Goodbye!")
             break
-        elif user_selection == '1':
-            print(calculate_prime_sum(input("Enter start number: "), input("Enter end number: ")))
-        elif user_selection == '2':
-            print(convert_length(input("Enter length value: "), input("Enter unit (M/F): ")))
-        elif user_selection == '3':
-            print(count_consonants_in_text(input("Enter text: ")))
-        elif user_selection == '4':
-            print(find_min_max(input("Enter numbers (space-separated): ")))
-        elif user_selection == '5':
-            print(check_if_palindrome(input("Enter text to check: ")))
         else:
-            print("Invalid choice")
-            
-        if input("\nContinue? (y/n): ").lower() != 'y':
+            print("Invalid choice. Please enter a number between 1 and 7.")
+        
+        again = input("Would you like to try another function? (y/n): ").lower()
+        if again != 'y':
             break
 
 if __name__ == "__main__":
-    run_application()
+    main()

@@ -21,14 +21,14 @@ def guess_number_game():
         
         if user_guess == secret_number:
             print(f"Congratulations! You guessed the correct number {secret_number} in {attempts} attempts!")
-            return True  # User won
+            return True 
         elif user_guess > secret_number:
             print("Too high! Try again.")
         else:
             print("Too low! Try again.")
     
     print(f"\nSorry, you've used all {max_attempts} attempts. The correct number was {secret_number}.")
-    return False  # User lost
+    return False  
 
 def rock_paper_scissors():
     choices = ["Rock", "Paper", "Scissors"]
